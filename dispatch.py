@@ -89,35 +89,43 @@ def dispatch_task(agent_role, task, target_file):
         return
 
     # 1. Switch to Agent's Desk (Branch)
+    original_branch = run_command("git branch --show-current")
     print(f"🔄 Switching to workspace: {agent_config['branch']}...")
-    try:
-        run_command(f"git checkout {agent_config['branch']}")
-    except:
-        # Try creating it if it doesn't exist (from main)
-        run_command("git checkout main")
-        run_command(f"git checkout -b {agent_config['branch']}")
-
-    # 2. Get Work from Agent
-    print("⏳ Agent is working (generating code)...")
-    try:
-        response = get_agent_response(agent_role, task, target_file)
-        code_content = extract_code_block(response)
-    except Exception as e:
-        print(f"❌ Agent failed: {e}")
-        return
-
-    # 3. Save Work
-    print(f"💾 Saving work to {target_file}...")
-    with open(target_file, "w") as f:
-        f.write(code_content)
-
-    # 4. Commit Work
-    print("📦 Committing changes...")
-    run_command(f"git add {target_file}")
-    commit_msg = f"{agent_role.capitalize()}: {task}"
-    run_command(f"git commit -m '{commit_msg}'")
     
-    print(f"✅ Task Complete! Work saved in branch '{agent_config['branch']}'.")
+    try:
+        try:
+            run_command(f"git checkout {agent_config['branch']}")
+        except:
+            # Try creating it if it doesn't exist (from main)
+            run_command("git checkout main")
+            run_command(f"git checkout -b {agent_config['branch']}")
+
+        # 2. Get Work from Agent
+        print("⏳ Agent is working (generating code)...")
+        try:
+            response = get_agent_response(agent_role, task, target_file)
+            code_content = extract_code_block(response)
+        except Exception as e:
+            print(f"❌ Agent failed: {e}")
+            return
+
+        # 3. Save Work
+        print(f"💾 Saving work to {target_file}...")
+        with open(target_file, "w") as f:
+            f.write(code_content)
+
+        # 4. Commit Work
+        print("📦 Committing changes...")
+        run_command(f"git add {target_file}")
+        commit_msg = f"{agent_role.capitalize()}: {task}"
+        run_command(f"git commit -m '{commit_msg}'")
+        
+        print(f"✅ Task Complete! Work saved in branch '{agent_config['branch']}'.")
+        
+    finally:
+        print(f"🔙 Returning to original branch: {original_branch}...")
+        run_command(f"git checkout {original_branch}")
+
     print("---------------------------------------------------")
 
 if __name__ == "__main__":
