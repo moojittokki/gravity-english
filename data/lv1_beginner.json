@@ -1,0 +1,12 @@
+[
+    {"id": 1, "word": "hello", "meaning": "안녕하세요", "example": "Hello, how are you?"},
+    {"id": 2, "word": "thank you", "meaning": "감사합니다", "example": "Thank you for your help."},
+    {"id": 3, "word": "yes", "meaning": "네", "example": "Yes, I understand."},
+    {"id": 4, "word": "no", "meaning": "아니요", "example": "No, I don't want it."},
+    {"id": 5, "word": "please", "meaning": "부탁합니다", "example": "Please help me."},
+    {"id": 6, "word": "sorry", "meaning": "죄송합니다", "example": "I am sorry."},
+    {"id": 7, "word": "excuse me", "meaning": "실례합니다", "example": "Excuse me, where is the station?"},
+    {"id": 8, "word": "water", "meaning": "물", "example": "Can I have some water?"},
+    {"id": 9, "word": "food", "meaning": "음식", "example": "I like Korean food."},
+    {"id": 10, "word": "goodbye", "meaning": "안녕히 계세요", "example": "Goodbye, see you tomorrow."}
+]
