@@ -12,6 +12,10 @@ AGENTS = {
     "backend": {
         "branch": "agent/backend",
         "prompt_file": "prompts/backend.txt"
+    },
+    "educator": {
+        "branch": "agent/educator",
+        "prompt_file": "prompts/educator.txt"
     }
 }
 
