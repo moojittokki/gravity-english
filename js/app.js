@@ -1,67 +1,161 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const questionEl = document.getElementById('question');
-    const answerButtons = document.querySelectorAll('.btn');
+    const quizCard = document.querySelector('.quiz-card');
+    let words = [];
+    let shuffledWords = [];
+    let questionCount = 0;
+    const totalQuestions = 10;
     let xp = localStorage.getItem('gravity_xp') || 0;
 
-    let words = [];
-    let currentWord = null;
+    // --- DOM Elements (will be re-queried after UI rebuilds) ---
+    let questionEl, answerButtons, progressBar, progressText;
 
-    // Fetch word data
+    // --- Data Fetching ---
     fetch('data/lv1_beginner.json')
         .then(response => response.json())
         .then(data => {
             words = data;
-            displayNewQuestion();
+            if (words && words.length > 0) {
+                startQuiz();
+            } else {
+                showError("No questions found in data file.");
+            }
         })
         .catch(error => {
             console.error('Failed to load words:', error);
-            questionEl.textContent = 'Failed to load questions.';
+            showError('Failed to load the quiz questions.');
         });
 
+    // --- Core Quiz Logic ---
+
+    function startQuiz() {
+        questionCount = 0;
+        shuffledWords = shuffleArray([...words]).slice(0, totalQuestions);
+        
+        if (shuffledWords.length === 0) {
+            showError("Not enough words to start the quiz.");
+            return;
+        }
+        
+        rebuildQuizUI();
+        displayNewQuestion();
+    }
+
     function displayNewQuestion() {
-        if (words.length === 0) {
-            questionEl.textContent = "No words loaded.";
+        questionCount++;
+
+        if (questionCount > shuffledWords.length) {
+            endQuiz();
             return;
         }
 
-        // 1. Select a new random word
-        currentWord = words[Math.floor(Math.random() * words.length)];
-        
-        // 4. Use 'currentWord.word' for the question
+        updateProgress();
+
+        const currentWord = shuffledWords[questionCount - 1];
         questionEl.textContent = currentWord.word;
 
-        // 2. Assign Correct Meaning to one button and Random Wrong Meanings to others
         const correctMeaning = currentWord.meaning;
         
-        // Get 3 random wrong meanings
+        // Get 3 unique wrong meanings
         const wrongMeanings = words
-            .filter(word => word.meaning !== correctMeaning) // Exclude the correct answer
-            .sort(() => 0.5 - Math.random()) // Shuffle the array
-            .slice(0, 3) // Get the first 3
+            .filter(word => word.meaning !== correctMeaning)
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 3)
             .map(word => word.meaning);
 
-        const allAnswers = [correctMeaning, ...wrongMeanings];
-        
-        // Shuffle answers
-        const shuffledAnswers = allAnswers.sort(() => 0.5 - Math.random());
+        const allAnswers = shuffleArray([correctMeaning, ...wrongMeanings]);
 
         answerButtons.forEach((button, index) => {
-            button.textContent = shuffledAnswers[index];
-            button.onclick = () => {
-                // 3. On button click, check if the text matches the correct meaning
-                if (button.textContent === correctMeaning) {
-                    // Correct answer
-                    xp = parseInt(xp) + 10;
-                    // 5. Keep XP saving logic
-                    localStorage.setItem('gravity_xp', xp); 
-                    alert('Correct! +10 XP');
-                } else {
-                    // Wrong answer
-                    alert(`Wrong! The correct answer for "${currentWord.word}" is "${correctMeaning}".`);
-                }
-                // Load the next question
-                displayNewQuestion();
-            };
+            if (allAnswers[index]) {
+                button.textContent = allAnswers[index];
+                button.style.display = 'block';
+                button.className = 'btn'; // Reset classes
+                button.disabled = false;
+                button.onclick = (event) => checkAnswer(event, correctMeaning);
+            } else {
+                button.style.display = 'none'; // Hide button if not enough answers
+            }
         });
+    }
+
+    function checkAnswer(event, correctMeaning) {
+        const selectedButton = event.target;
+        const isCorrect = selectedButton.textContent === correctMeaning;
+
+        answerButtons.forEach(button => {
+            button.disabled = true; // Disable all buttons
+            if (button.textContent === correctMeaning) {
+                button.classList.add('correct'); // Always show the correct one
+            }
+        });
+        
+        document.body.style.transition = 'background-color 0.3s';
+
+        if (isCorrect) {
+            xp = parseInt(xp) + 10;
+            localStorage.setItem('gravity_xp', xp);
+            selectedButton.classList.add('correct');
+            document.body.style.backgroundColor = '#d4edda'; // Light green
+        } else {
+            selectedButton.classList.add('incorrect');
+            document.body.style.backgroundColor = '#f8d7da'; // Light red
+        }
+
+        setTimeout(() => {
+            document.body.style.backgroundColor = ''; // Revert to original
+            displayNewQuestion();
+        }, 1500);
+    }
+
+    function endQuiz() {
+        quizCard.innerHTML = `
+            <div class="quiz-complete-container">
+                <h1>Quiz Complete!</h1>
+                <p>You have finished this round.</p>
+                <button id="restart-btn" class="btn">Restart Quiz</button>
+            </div>
+        `;
+        document.getElementById('restart-btn').addEventListener('click', startQuiz);
+    }
+
+    // --- UI & Utility Functions ---
+
+    function rebuildQuizUI() {
+        quizCard.innerHTML = `
+            <h2 id="question">Loading...</h2>
+            <div class="answer-buttons">
+                <button class="btn"></button>
+                <button class="btn"></button>
+                <button class="btn"></button>
+                <button class="btn"></button>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <p id="progress-text">Question 1 of ${shuffledWords.length}</p>
+        `;
+        
+        // Re-assign DOM element variables
+        questionEl = document.getElementById('question');
+        answerButtons = quizCard.querySelectorAll('.btn');
+        progressBar = document.getElementById('progress-bar');
+        progressText = document.getElementById('progress-text');
+    }
+    
+    function updateProgress() {
+        const progressPercentage = ((questionCount -1) / shuffledWords.length) * 100;
+        progressBar.style.width = `${progressPercentage}%`;
+        progressText.textContent = `Question ${questionCount} of ${shuffledWords.length}`;
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+    
+    function showError(message) {
+        quizCard.innerHTML = `<div class="error-message"><h1>Error</h1><p>${message}</p></div>`;
     }
 });
