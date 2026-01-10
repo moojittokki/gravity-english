@@ -1,0 +1,189 @@
+/* General Body and Typography */
+:root {
+    --primary-blue: #6B7AA1;
+    --secondary-purple: #8E7AB5;
+    --accent-light-blue: #B7D9D9;
+    --background-light-gray: #F4F4F9;
+    --text-dark: #333333;
+    --card-background: #FFFFFF;
+    --button-text: #FFFFFF;
+    --button-hover-blue: #5A6A90;
+    --button-hover-purple: #7E6A9F;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    line-height: 1.6;
+    color: var(--text-dark);
+    background-color: var(--background-light-gray);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    padding: 20px; /* Add some padding around the content */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-blue);
+    margin-bottom: 0.5em;
+}
+
+p {
+    margin-bottom: 1em;
+}
+
+/* Card Styling for Quiz/Content Blocks */
+.card {
+    background-color: var(--card-background);
+    border-radius: 15px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    margin: 20px 0;
+    width: 100%;
+    max-width: 500px; /* Constrain width for better readability on large screens */
+    text-align: center;
+    position: relative;
+    overflow: hidden; /* For potential background elements */
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, var(--accent-light-blue) 10%, transparent 70%);
+    opacity: 0.3;
+    border-radius: 50%;
+    z-index: 0;
+    transform: rotate(45deg);
+}
+
+.card::after {
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    right: -30px;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, var(--secondary-purple) 10%, transparent 70%);
+    opacity: 0.2;
+    border-radius: 50%;
+    z-index: 0;
+    transform: rotate(-30deg);
+}
+
+.card > * { /* Ensure content is above pseudo-elements */
+    position: relative;
+    z-index: 1;
+}
+
+
+/* Button Styling */
+button {
+    background-color: var(--primary-blue);
+    color: var(--button-text);
+    border: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin: 10px 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    outline: none;
+}
+
+button:hover {
+    background-color: var(--button-hover-blue);
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Secondary Button (example for different action, e.g., 'Skip' or 'Restart') */
+button.secondary {
+    background-color: var(--secondary-purple);
+}
+
+button.secondary:hover {
+    background-color: var(--button-hover-purple);
+}
+
+/* Quiz-specific elements (example) */
+.question-text {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    color: var(--text-dark);
+}
+
+.options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.options-container button {
+    width: 100%; /* Make option buttons fill the card width */
+    background-color: var(--accent-light-blue);
+    color: var(--text-dark);
+    box-shadow: none; /* Remove shadow for a flatter look on options */
+}
+
+.options-container button:hover {
+    background-color: var(--primary-blue);
+    color: var(--button-text);
+}
+
+
+/* Responsive Design - Adjustments for larger screens */
+@media (min-width: 768px) {
+    body {
+        padding: 40px;
+    }
+
+    .card {
+        padding: 40px;
+        margin: 30px 0;
+        max-width: 600px; /* Slightly wider for tablets */
+    }
+
+    button {
+        padding: 15px 30px;
+        font-size: 1.1em;
+    }
+
+    .options-container {
+        flex-direction: row; /* Options side-by-side on larger screens */
+        flex-wrap: wrap; /* Allow wrapping if many options */
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .options-container button {
+        width: auto; /* Auto width for options, allows them to be next to each other */
+        min-width: 180px; /* Minimum width for better touch targets */
+        flex-grow: 1; /* Allow buttons to grow and fill space */
+    }
+}
+
+@media (min-width: 1024px) {
+    .card {
+        max-width: 700px; /* Wider for desktops */
+    }
+}
