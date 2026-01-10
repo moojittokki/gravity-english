@@ -110,6 +110,16 @@ button:hover {
     transform: translateY(-2px);
 }
 
+.correct {
+    background-color: #2ecc71 !important;
+    color: white !important;
+}
+
+.wrong {
+    background-color: #e74c3c !important;
+    color: white !important;
+}
+
 button:active {
     transform: translateY(0);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
