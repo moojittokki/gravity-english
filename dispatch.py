@@ -111,6 +111,7 @@ def dispatch_task(agent_role, task, target_file):
 
         # 3. Save Work
         print(f"💾 Saving work to {target_file}...")
+        os.makedirs(os.path.dirname(target_file), exist_ok=True) if os.path.dirname(target_file) else None
         with open(target_file, "w") as f:
             f.write(code_content)
 
