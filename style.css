@@ -11,7 +11,9 @@
     --button-hover-purple: #7E6A9F;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -27,10 +29,16 @@ body {
     min-height: 100vh;
     justify-content: center;
     align-items: center;
-    padding: 20px; /* Add some padding around the content */
+    padding: 20px;
+    /* Add some padding around the content */
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     color: var(--primary-blue);
     margin-bottom: 0.5em;
 }
@@ -47,10 +55,12 @@ p {
     padding: 25px;
     margin: 20px 0;
     width: 100%;
-    max-width: 500px; /* Constrain width for better readability on large screens */
+    max-width: 500px;
+    /* Constrain width for better readability on large screens */
     text-align: center;
     position: relative;
-    overflow: hidden; /* For potential background elements */
+    overflow: hidden;
+    /* For potential background elements */
 }
 
 .card::before {
@@ -81,7 +91,8 @@ p {
     transform: rotate(-30deg);
 }
 
-.card > * { /* Ensure content is above pseudo-elements */
+.card>* {
+    /* Ensure content is above pseudo-elements */
     position: relative;
     z-index: 1;
 }
@@ -115,7 +126,8 @@ button:hover {
     color: white !important;
 }
 
-.wrong {
+.wrong,
+.incorrect {
     background-color: #e74c3c !important;
     color: white !important;
 }
@@ -149,10 +161,12 @@ button.secondary:hover {
 }
 
 .options-container button {
-    width: 100%; /* Make option buttons fill the card width */
+    width: 100%;
+    /* Make option buttons fill the card width */
     background-color: var(--accent-light-blue);
     color: var(--text-dark);
-    box-shadow: none; /* Remove shadow for a flatter look on options */
+    box-shadow: none;
+    /* Remove shadow for a flatter look on options */
 }
 
 .options-container button:hover {
@@ -170,7 +184,8 @@ button.secondary:hover {
     .card {
         padding: 40px;
         margin: 30px 0;
-        max-width: 600px; /* Slightly wider for tablets */
+        max-width: 600px;
+        /* Slightly wider for tablets */
     }
 
     button {
@@ -179,21 +194,27 @@ button.secondary:hover {
     }
 
     .options-container {
-        flex-direction: row; /* Options side-by-side on larger screens */
-        flex-wrap: wrap; /* Allow wrapping if many options */
+        flex-direction: row;
+        /* Options side-by-side on larger screens */
+        flex-wrap: wrap;
+        /* Allow wrapping if many options */
         justify-content: center;
         gap: 15px;
     }
 
     .options-container button {
-        width: auto; /* Auto width for options, allows them to be next to each other */
-        min-width: 180px; /* Minimum width for better touch targets */
-        flex-grow: 1; /* Allow buttons to grow and fill space */
+        width: auto;
+        /* Auto width for options, allows them to be next to each other */
+        min-width: 180px;
+        /* Minimum width for better touch targets */
+        flex-grow: 1;
+        /* Allow buttons to grow and fill space */
     }
 }
 
 @media (min-width: 1024px) {
     .card {
-        max-width: 700px; /* Wider for desktops */
+        max-width: 700px;
+        /* Wider for desktops */
     }
 }
