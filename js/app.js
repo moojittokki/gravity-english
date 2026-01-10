@@ -1,10 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     const questionEl = document.getElementById('question');
     const answerButtons = document.querySelectorAll('.btn');
-    let xp = localStorage.getItem('gravity_xp') || 0;
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
 
+    let xp = localStorage.getItem('gravity_xp') || 0;
     let words = [];
     let currentWord = null;
+    let questionCount = 1;
+    const totalQuestions = 10;
 
     // Fetch word data
     fetch('data/lv1_beginner.json')
@@ -19,6 +23,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
     function displayNewQuestion() {
+        if (questionCount > totalQuestions) {
+            questionCount = 1; // Reset after 10 questions
+        }
+
+        updateProgress();
+
+        // Enable buttons and remove previous result styles
+        answerButtons.forEach(button => {
+            button.disabled = false;
+            button.classList.remove('correct', 'wrong');
+        });
+
         if (words.length === 0) {
             questionEl.textContent = "No words loaded.";
             return;
@@ -47,21 +63,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
         answerButtons.forEach((button, index) => {
             button.textContent = shuffledAnswers[index];
-            button.onclick = () => {
-                // 3. On button click, check if the text matches the correct meaning
-                if (button.textContent === correctMeaning) {
-                    // Correct answer
-                    xp = parseInt(xp) + 10;
-                    // 5. Keep XP saving logic
-                    localStorage.setItem('gravity_xp', xp); 
-                    alert('Correct! +10 XP');
-                } else {
-                    // Wrong answer
-                    alert(`Wrong! The correct answer for "${currentWord.word}" is "${correctMeaning}".`);
-                }
-                // Load the next question
-                displayNewQuestion();
-            };
+            button.onclick = () => handleAnswer(button, correctMeaning);
         });
+    }
+
+    function handleAnswer(selectedButton, correctMeaning) {
+        // Disable all buttons to prevent multiple clicks
+        answerButtons.forEach(button => button.disabled = true);
+
+        if (selectedButton.textContent === correctMeaning) {
+            // Correct answer
+            selectedButton.classList.add('correct');
+            xp = parseInt(xp) + 10;
+            localStorage.setItem('gravity_xp', xp); 
+        } else {
+            // Wrong answer
+            selectedButton.classList.add('wrong');
+            // Highlight the correct answer
+            answerButtons.forEach(button => {
+                if (button.textContent === correctMeaning) {
+                    button.classList.add('correct');
+                }
+            });
+        }
+
+        questionCount++;
+
+        // Wait 1 second before showing the next question
+        setTimeout(() => {
+            displayNewQuestion();
+        }, 1000);
+    }
+
+    function updateProgress() {
+        // Update progress text
+        progressText.textContent = `Question ${questionCount}/${totalQuestions}`;
+        
+        // Update progress bar
+        const progressPercentage = ((questionCount -1) / totalQuestions) * 100;
+        progressBar.style.width = `${progressPercentage}%`;
     }
 });
