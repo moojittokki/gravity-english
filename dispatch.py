@@ -135,7 +135,7 @@ def dispatch_task(agent_role, task, target_file):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="AI Team Manager")
-    parser.add_argument("--agent", required=True, choices=["frontend", "backend"], help="Role to dispatch")
+    parser.add_argument("--agent", required=True, choices=["frontend", "backend", "educator"], help="Role to dispatch")
     parser.add_argument("--task", required=True, help="Task description")
     parser.add_argument("--file", required=True, help="Target file name")
     
